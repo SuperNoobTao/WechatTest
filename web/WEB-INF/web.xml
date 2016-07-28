@@ -10,6 +10,8 @@
 
 
 
+
+
     <!-- 配置DispatcherServlet -->
     <servlet>
         <servlet-name>seckill-dispatcher</servlet-name>
@@ -22,6 +24,7 @@
         <init-param>
             <param-name>contextConfigLocation</param-name>
             <param-value>WEB-INF/application.xml</param-value>
+
         </init-param>
     </servlet>
     <servlet-mapping>

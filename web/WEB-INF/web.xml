@@ -40,10 +40,7 @@
         </param-value>
     </context-param>
 
-    <!-- 首页 -->
-    <welcome-file-list>
-        <welcome-file>/wechat/welcome/api</welcome-file>
-    </welcome-file-list>
+
 
 
 </web-app>

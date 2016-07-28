@@ -1,6 +1,9 @@
 package cn.edu.zucc.controller;
 
+import cn.edu.zucc.pojo.SNSUserInfo;
+import cn.edu.zucc.pojo.WeixinOauth2Token;
 import cn.edu.zucc.service.CoreService;
+import cn.edu.zucc.util.AdvancedUtil;
 import cn.edu.zucc.util.SignUtil;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -8,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
@@ -62,11 +66,36 @@ public class HomeController {
         PrintWriter out = response.getWriter();
         out.print(respMessage);
         out.close();
-
-
-
     }
 
+    @RequestMapping(value="/OAuth",method = RequestMethod.GET)
+
+    public String OAuth( HttpServletResponse response, HttpServletRequest request) throws IOException, ServletException {
+        System.out.println("进入OAuth");
+        request.setCharacterEncoding("utf-8");
+        response.setCharacterEncoding("utf-8");
+
+        // 用户同意授权后，能获取到code
+        String code = request.getParameter("code");
+        System.out.println(code);
+
+        // 用户同意授权
+        if (!"authdeny".equals(code)) {
+            // 获取网页授权access_token
+            WeixinOauth2Token weixinOauth2Token = AdvancedUtil.getOauth2AccessToken("wxa2e22be671c6774b", "2833fb4fa09b18f4218661131b95c0f2", code);
+            // 网页授权接口访问凭证
+            String accessToken = weixinOauth2Token.getAccessToken();
+            // 用户标识
+            String openId = weixinOauth2Token.getOpenId();
+            // 获取用户信息
+            SNSUserInfo snsUserInfo = AdvancedUtil.getSNSUserInfo(accessToken, openId);
+
+            // 设置要传递的参数
+            request.setAttribute("snsUserInfo", snsUserInfo);
+        }
+        // 跳转到index.jsp
+      return "index";
+    }
 
 
 

@@ -3,6 +3,7 @@ package cn.edu.zucc.service;
 import cn.edu.zucc.message.resp.Article;
 import cn.edu.zucc.message.resp.NewsMessage;
 import cn.edu.zucc.message.resp.TextMessage;
+import cn.edu.zucc.util.CommonUtil;
 import cn.edu.zucc.util.MessageUtil;
 
 import java.util.ArrayList;
@@ -87,7 +88,10 @@ public class CoreService {
             }
             // 当用户发消息时
             else {
-                textMessage.setContent("请通过菜单使用网址导航服务！");
+                String oauth = CommonUtil.urlEncodeUTF8("http://st.tunnel.qydev.com/wechat/welcome/OAuth");
+                String a = "https://open.weixin.qq.com/connect/oauth2/authorize?appid=wxa2e22be671c6774b&redirect_uri=";
+                String b = "&response_type=code&scope=snsapi_userinfo&state=STATE#wechat_redirect";
+                textMessage.setContent(a+oauth+b);
                 respXml = MessageUtil.textMessageToXml(textMessage);
             }
         } catch (Exception e) {

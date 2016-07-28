@@ -1,16 +1,12 @@
-<%--
-  Created by IntelliJ IDEA.
-  User: vito
-  Date: 2016/7/26
-  Time: 10:50
-  To change this template use File | Settings | File Templates.
---%>
-<%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ page language="java" pageEncoding="utf-8"%>
+
+<%@ page import="cn.edu.zucc.pojo.SNSUserInfo" %>
 <html>
-  <head>
-    <title>$Title$</title>
-  </head>
-  <body>
-  $END$
-  </body>
+<head>
+  <title>welcome</title>
+
+</head>
+<body>
+Hello World
+</body>
 </html>

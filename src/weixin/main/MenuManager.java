@@ -27,7 +27,7 @@ public class MenuManager {
      */
     private static Menu getMenu() {
         ClickButton btn11 = new ClickButton();
-        btn11.setName("开源中国1111");
+        btn11.setName("开源中国");
         btn11.setType("click");
         btn11.setKey("oschina");
 

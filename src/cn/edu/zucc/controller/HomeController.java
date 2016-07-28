@@ -83,10 +83,10 @@ public class HomeController {
         if (!"authdeny".equals(code)) {
             // 获取网页授权access_token
             WeixinOauth2Token weixinOauth2Token = AdvancedUtil.getOauth2AccessToken("wxa2e22be671c6774b", "2833fb4fa09b18f4218661131b95c0f2", code);
-            // 网页授权接口访问凭证
+            // 网页授权接口访问凭证(json取得acccessToken)
             String accessToken = weixinOauth2Token.getAccessToken();
-            // 用户标识
-            String openId = weixinOauth2Token.getOpenId();
+            // 用户标识(json里取得openId)
+            String openId      = weixinOauth2Token.getOpenId();
             // 获取用户信息
             SNSUserInfo snsUserInfo = AdvancedUtil.getSNSUserInfo(accessToken, openId);
 

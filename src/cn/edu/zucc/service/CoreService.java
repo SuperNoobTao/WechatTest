@@ -68,7 +68,11 @@ public class CoreService {
                         article.setTitle("开源中国");
                         article.setDescription("开源中国社区成立于2008年8月，是目前中国最大的开源技术社区。\n\n开源中国的目的是为中国的IT技术人员提供一个全面的、快捷更新的用来检索开源软件以及交流开源经验的平台。\n\n经过不断的改进,目前开源中国社区已经形成了由开源软件库、代码分享、资讯、讨论区和博客等几大频道内容。");
                         article.setPicUrl("");
-                        article.setUrl("http://m.oschina.net");
+                        String oauth = CommonUtil.urlEncodeUTF8("http://st.tunnel.qydev.com/wechat/welcome/OAuth");
+                        String a = "https://open.weixin.qq.com/connect/oauth2/authorize?appid=wxa2e22be671c6774b&redirect_uri=";
+                        String b = "&response_type=code&scope=snsapi_userinfo&state=STATE#wechat_redirect";
+
+                        article.setUrl(a+oauth+b);
                         List<Article> articleList = new ArrayList<Article>();
                         articleList.add(article);
                         // 创建图文消息
@@ -88,10 +92,8 @@ public class CoreService {
             }
             // 当用户发消息时
             else {
-                String oauth = CommonUtil.urlEncodeUTF8("http://st.tunnel.qydev.com/wechat/welcome/OAuth");
-                String a = "https://open.weixin.qq.com/connect/oauth2/authorize?appid=wxa2e22be671c6774b&redirect_uri=";
-                String b = "&response_type=code&scope=snsapi_userinfo&state=STATE#wechat_redirect";
-                textMessage.setContent(a+oauth+b);
+
+                textMessage.setContent("请按菜单栏进行操作");
                 respXml = MessageUtil.textMessageToXml(textMessage);
             }
         } catch (Exception e) {

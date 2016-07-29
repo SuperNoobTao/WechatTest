@@ -1,12 +1,14 @@
 package cn.edu.zucc.pojo;
 
+import java.io.Serializable;
+
 /**
  * 凭证
  *
  * @author liufeng
  * @date 2013-10-17
  */
-public class Token {
+public class Token implements Serializable{
 	// 接口访问凭证
 	private String accessToken;
 	// 凭证有效期，单位：秒

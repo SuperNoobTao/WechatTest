@@ -9,11 +9,15 @@ import javax.net.ssl.SSLSocketFactory;
 import javax.net.ssl.TrustManager;
 
 import cn.edu.zucc.pojo.Token;
+import javafx.scene.input.TouchEvent;
 import net.sf.json.JSONException;
 import net.sf.json.JSONObject;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import redis.RedisAPI;
+import redis.clients.jedis.Jedis;
+import redis.clients.jedis.JedisPool;
 
 /**
  * 通用工具类
@@ -95,24 +99,37 @@ public class CommonUtil {
 	 * @param appsecret 密钥
 	 * @return
 	 */
-	public static Token getToken(String appid, String appsecret) {
-		Token token = null;
-		String requestUrl = token_url.replace("APPID", appid).replace("APPSECRET", appsecret);
-		// 发起GET请求获取凭证
-		JSONObject jsonObject = httpsRequest(requestUrl, "GET", null);
+	public static String getToken(String appid, String appsecret) {
+		JedisPool pool = RedisAPI.getPool();
+		Jedis jedis = null;
+			jedis = pool.getResource();
 
-		if (null != jsonObject) {
-			try {
-				token = new Token();
-				token.setAccessToken(jsonObject.getString("access_token"));
-				token.setExpiresIn(jsonObject.getInt("expires_in"));
-			} catch (JSONException e) {
-				token = null;
-				// 获取token失败
-				log.error("获取token失败 errcode:{} errmsg:{}", jsonObject.getInt("errcode"), jsonObject.getString("errmsg"));
+			String key = StringUtil.getRediskey_accesstoken(appid);
+
+			String token = jedis.get(key);
+			if (token == null) {
+				String accesstoken = null;
+				String requestUrl = token_url.replace("APPID", appid).replace("APPSECRET", appsecret);
+				// 发起GET请求获取凭证
+				JSONObject jsonObject = httpsRequest(requestUrl, "GET", null);
+				if (jsonObject != null) {
+					try {
+						accesstoken=jsonObject.getString("access_token");
+						int expire=jsonObject.getInt("expires_in");
+						jedis.setex(key,expire-60,accesstoken);
+					} catch (JSONException e) {
+						token = null;
+						// 获取token失败
+						log.error("获取token失败 errcode:{} errmsg:{}", jsonObject.getInt("errcode"), jsonObject.getString("errmsg"));
+					}
+				}
+
+				return accesstoken;
 			}
-		}
+
 		return token;
+
+
 	}
 
 	/**

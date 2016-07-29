@@ -263,7 +263,7 @@ import org.slf4j.LoggerFactory;
 
     public static void main(String args[]) {
         // 获取接口访问凭证
-        String accessToken = CommonUtil.getToken("APPID", "APPSECRET").getAccessToken();
+        String accessToken = CommonUtil.getToken("APPID", "APPSECRET");
 
         /**
          * 发送客服消息（文本消息）

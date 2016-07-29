@@ -101,12 +101,12 @@ public class MenuManager {
         String appSecret = "2833fb4fa09b18f4218661131b95c0f2";
 
         // 调用接口获取凭证
-        Token token = CommonUtil.getToken(appId, appSecret);
+        String token = CommonUtil.getToken(appId, appSecret);
 
         if (null != token) {
             // 创建菜单
-            System.out.println(token.getAccessToken());
-            boolean result = MenuUtil.createMenu(getMenu(), token.getAccessToken());
+            System.out.println(token);
+            boolean result = MenuUtil.createMenu(getMenu(), token);
 //            boolean result = MenuUtil.deleteMenu(token.getAccessToken());
             // 判断菜单创建结果
             if (result)

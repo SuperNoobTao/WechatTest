@@ -50,6 +50,13 @@
         <property name="basename" value="/WEB-INF/i18n/resources/messages" /> </bean> -->
 
     <!-- spring MVC json 配置 2013-10-30 -->
+    <!--  这里申明的id必须为multipartResolver  -->
+    <!--  这里申明的id必须为multipartResolver  -->
+    <bean id="multipartResolver"
+          class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
 
+        <!-- one of the properties available; the maximum file size in bytes -->
+        <property name="maxUploadSize" value="1000000"/>
+    </bean>
 
 </beans>

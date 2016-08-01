@@ -17,6 +17,8 @@ import javax.net.ssl.HttpsURLConnection;
 import cn.edu.zucc.message.resp.Article;
 import cn.edu.zucc.message.resp.Music;
 import cn.edu.zucc.pojo.SNSUserInfo;
+import cn.edu.zucc.pojo.WeixinMedia;
+import cn.edu.zucc.pojo.WeixinMediaEver;
 import cn.edu.zucc.pojo.WeixinOauth2Token;
 import net.sf.json.JSONArray;
 import net.sf.json.JSONException;
@@ -25,6 +27,7 @@ import net.sf.json.JSONObject;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.web.multipart.MultipartFile;
 
 
 /**
@@ -260,40 +263,338 @@ import org.slf4j.LoggerFactory;
 
 
 
+    /**
+     * 永久上传媒体文件
+     *
+     * @param accessToken 接口访问凭证
+     * @param type 媒体文件类型（image、voice、video和thumb）
+     * @param file 媒体文件的url
+     */
+    public static WeixinMediaEver uploadMediaEver(String accessToken, String type, MultipartFile file) {
+        System.out.println("accessToken="+accessToken);
+        System.out.println("image="+type);
+
+        WeixinMediaEver weixinMedia = null;
+        // 拼装请求地址
+        String uploadMediaUrl = "https://api.weixin.qq.com/cgi-bin/material/add_material?access_token=ACCESS_TOKEN&type=TYPE";
+        uploadMediaUrl = uploadMediaUrl.replace("ACCESS_TOKEN", accessToken).replace("TYPE", type);
+
+        // 定义数据分隔符
+        String boundary = "------------7da2e536604c8";
+        try {
+            URL uploadUrl = new URL(uploadMediaUrl);
+            HttpURLConnection uploadConn = (HttpURLConnection) uploadUrl.openConnection();
+            uploadConn.setDoOutput(true);
+            uploadConn.setDoInput(true);
+            uploadConn.setRequestMethod("POST");
+            // 设置请求头Content-Type
+            uploadConn.setRequestProperty("Content-Type", "multipart/form-data;boundary=" + boundary);
+            // 获取媒体文件上传的输出流（往微信服务器写数据）
+            OutputStream outputStream = uploadConn.getOutputStream();
+
+
+
+            // 从请求头中获取内容类型
+            String contentType = file.getContentType();
+            // 根据内容类型判断文件扩展名
+            String fileExt = CommonUtil.getFileExt(contentType);
+            // 请求体开始
+            outputStream.write(("--" + boundary + "\r\n").getBytes());
+            outputStream.write(String.format("Content-Disposition: form-data; name=\"media\"; filename=\"file1%s\"\r\n", fileExt).getBytes());
+            outputStream.write(String.format("Content-Type: %s\r\n\r\n", contentType).getBytes());
+
+            // 获取媒体文件的输入流（读取文件）
+            BufferedInputStream bis = new BufferedInputStream(file.getInputStream());
+            byte[] buf = new byte[8096];
+            int size = 0;
+            while ((size = bis.read(buf)) != -1) {
+                // 将媒体文件写到输出流（往微信服务器写数据）
+                outputStream.write(buf, 0, size);
+            }
+            // 请求体结束
+            outputStream.write(("\r\n--" + boundary + "--\r\n").getBytes());
+            outputStream.close();
+            bis.close();
+
+
+            // 获取媒体文件上传的输入流（从微信服务器读数据）
+            InputStream inputStream = uploadConn.getInputStream();
+            InputStreamReader inputStreamReader = new InputStreamReader(inputStream, "utf-8");
+            BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
+            StringBuffer buffer = new StringBuffer();
+            String str = null;
+            while ((str = bufferedReader.readLine()) != null) {
+                buffer.append(str);
+            }
+            bufferedReader.close();
+            inputStreamReader.close();
+            // 释放资源
+            inputStream.close();
+            inputStream = null;
+            uploadConn.disconnect();
+
+            // 使用JSON-lib解析返回结果
+            JSONObject jsonObject = JSONObject.fromObject(buffer.toString());
+            weixinMedia = new WeixinMediaEver();
+            weixinMedia.setMediaId(jsonObject.getString("media_id"));
+            weixinMedia.setUrl(jsonObject.getString("url"));
+        } catch (Exception e) {
+            weixinMedia = null;
+            log.error("上传媒体文件失败：{}", e);
+        }
+        return weixinMedia;
+    }
+
+
+
+
+    /**
+     * 上传媒体文件
+     *
+     * @param accessToken 接口访问凭证
+     * @param type 媒体文件类型（image、voice、video和thumb）
+     * @param file 媒体文件的url
+     */
+    public static WeixinMedia uploadMedia1(String accessToken, String type, MultipartFile file) {
+        System.out.println("accessToken="+accessToken);
+        System.out.println("image="+type);
+
+        WeixinMedia weixinMedia = null;
+        // 拼装请求地址
+        String uploadMediaUrl = "http://file.api.weixin.qq.com/cgi-bin/media/upload?access_token=ACCESS_TOKEN&type=TYPE";
+        uploadMediaUrl = uploadMediaUrl.replace("ACCESS_TOKEN", accessToken).replace("TYPE", type);
+
+        // 定义数据分隔符
+        String boundary = "------------7da2e536604c8";
+        try {
+            URL uploadUrl = new URL(uploadMediaUrl);
+            HttpURLConnection uploadConn = (HttpURLConnection) uploadUrl.openConnection();
+            uploadConn.setDoOutput(true);
+            uploadConn.setDoInput(true);
+            uploadConn.setRequestMethod("POST");
+            // 设置请求头Content-Type
+            uploadConn.setRequestProperty("Content-Type", "multipart/form-data;boundary=" + boundary);
+            // 获取媒体文件上传的输出流（往微信服务器写数据）
+            OutputStream outputStream = uploadConn.getOutputStream();
+
+
+
+            // 从请求头中获取内容类型
+            String contentType = file.getContentType();
+            // 根据内容类型判断文件扩展名
+            String fileExt = CommonUtil.getFileExt(contentType);
+            // 请求体开始
+            outputStream.write(("--" + boundary + "\r\n").getBytes());
+            outputStream.write(String.format("Content-Disposition: form-data; name=\"media\"; filename=\"file1%s\"\r\n", fileExt).getBytes());
+            outputStream.write(String.format("Content-Type: %s\r\n\r\n", contentType).getBytes());
+
+            // 获取媒体文件的输入流（读取文件）
+            BufferedInputStream bis = new BufferedInputStream(file.getInputStream());
+            byte[] buf = new byte[8096];
+            int size = 0;
+            while ((size = bis.read(buf)) != -1) {
+                // 将媒体文件写到输出流（往微信服务器写数据）
+                outputStream.write(buf, 0, size);
+            }
+            // 请求体结束
+            outputStream.write(("\r\n--" + boundary + "--\r\n").getBytes());
+            outputStream.close();
+            bis.close();
+
+
+            // 获取媒体文件上传的输入流（从微信服务器读数据）
+            InputStream inputStream = uploadConn.getInputStream();
+            InputStreamReader inputStreamReader = new InputStreamReader(inputStream, "utf-8");
+            BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
+            StringBuffer buffer = new StringBuffer();
+            String str = null;
+            while ((str = bufferedReader.readLine()) != null) {
+                buffer.append(str);
+            }
+            bufferedReader.close();
+            inputStreamReader.close();
+            // 释放资源
+            inputStream.close();
+            inputStream = null;
+            uploadConn.disconnect();
+
+            // 使用JSON-lib解析返回结果
+            JSONObject jsonObject = JSONObject.fromObject(buffer.toString());
+            weixinMedia = new WeixinMedia();
+            weixinMedia.setType(jsonObject.getString("type"));
+            // type等于thumb时的返回结果和其它类型不一样
+            if ("thumb".equals(type))
+                weixinMedia.setMediaId(jsonObject.getString("thumb_media_id"));
+            else
+                weixinMedia.setMediaId(jsonObject.getString("media_id"));
+            weixinMedia.setCreatedAt(jsonObject.getInt("created_at"));
+        } catch (Exception e) {
+            weixinMedia = null;
+            log.error("上传媒体文件失败：{}", e);
+        }
+        return weixinMedia;
+    }
+
+    /**
+     * 上传媒体文件
+     *
+     * @param accessToken 接口访问凭证
+     * @param type 媒体文件类型（image、voice、video和thumb）
+     * @param mediaFileUrl 媒体文件的url
+     */
+    public static WeixinMedia uploadMedia(String accessToken, String type, String mediaFileUrl) {
+        System.out.println("accessToken="+accessToken);
+        System.out.println("image="+type);
+        System.out.println("mediaFileUrl="+mediaFileUrl);
+        WeixinMedia weixinMedia = null;
+        // 拼装请求地址
+        String uploadMediaUrl = "http://file.api.weixin.qq.com/cgi-bin/media/upload?access_token=ACCESS_TOKEN&type=TYPE";
+        uploadMediaUrl = uploadMediaUrl.replace("ACCESS_TOKEN", accessToken).replace("TYPE", type);
+
+        // 定义数据分隔符
+        String boundary = "------------7da2e536604c8";
+        try {
+            URL uploadUrl = new URL(uploadMediaUrl);
+            HttpURLConnection uploadConn = (HttpURLConnection) uploadUrl.openConnection();
+            uploadConn.setDoOutput(true);
+            uploadConn.setDoInput(true);
+            uploadConn.setRequestMethod("POST");
+            // 设置请求头Content-Type
+            uploadConn.setRequestProperty("Content-Type", "multipart/form-data;boundary=" + boundary);
+            // 获取媒体文件上传的输出流（往微信服务器写数据）
+            OutputStream outputStream = uploadConn.getOutputStream();
+
+            URL mediaUrl = new URL(mediaFileUrl);
+            HttpURLConnection meidaConn = (HttpURLConnection) mediaUrl.openConnection();
+            meidaConn.setDoOutput(true);
+            meidaConn.setRequestMethod("GET");
+
+            // 从请求头中获取内容类型
+            String contentType = meidaConn.getHeaderField("Content-Type");
+            // 根据内容类型判断文件扩展名
+            String fileExt = CommonUtil.getFileExt(contentType);
+            // 请求体开始
+            outputStream.write(("--" + boundary + "\r\n").getBytes());
+            outputStream.write(String.format("Content-Disposition: form-data; name=\"media\"; filename=\"file1%s\"\r\n", fileExt).getBytes());
+            outputStream.write(String.format("Content-Type: %s\r\n\r\n", contentType).getBytes());
+
+            // 获取媒体文件的输入流（读取文件）
+            BufferedInputStream bis = new BufferedInputStream(meidaConn.getInputStream());
+            byte[] buf = new byte[8096];
+            int size = 0;
+            while ((size = bis.read(buf)) != -1) {
+                // 将媒体文件写到输出流（往微信服务器写数据）
+                outputStream.write(buf, 0, size);
+            }
+            // 请求体结束
+            outputStream.write(("\r\n--" + boundary + "--\r\n").getBytes());
+            outputStream.close();
+            bis.close();
+            meidaConn.disconnect();
+
+            // 获取媒体文件上传的输入流（从微信服务器读数据）
+            InputStream inputStream = uploadConn.getInputStream();
+            InputStreamReader inputStreamReader = new InputStreamReader(inputStream, "utf-8");
+            BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
+            StringBuffer buffer = new StringBuffer();
+            String str = null;
+            while ((str = bufferedReader.readLine()) != null) {
+                buffer.append(str);
+            }
+            bufferedReader.close();
+            inputStreamReader.close();
+            // 释放资源
+            inputStream.close();
+            inputStream = null;
+            uploadConn.disconnect();
+
+            // 使用JSON-lib解析返回结果
+            JSONObject jsonObject = JSONObject.fromObject(buffer.toString());
+            weixinMedia = new WeixinMedia();
+            weixinMedia.setType(jsonObject.getString("type"));
+            // type等于thumb时的返回结果和其它类型不一样
+            if ("thumb".equals(type))
+                weixinMedia.setMediaId(jsonObject.getString("thumb_media_id"));
+            else
+                weixinMedia.setMediaId(jsonObject.getString("media_id"));
+            weixinMedia.setCreatedAt(jsonObject.getInt("created_at"));
+        } catch (Exception e) {
+            weixinMedia = null;
+            log.error("上传媒体文件失败：{}", e);
+        }
+        return weixinMedia;
+    }
+
+
+
+    /**
+     * 下载媒体文件
+     *
+     * @param accessToken 接口访问凭证
+     * @param mediaId 媒体文件标识
+     * @param savePath 文件在服务器上的存储路径
+     * @return
+     */
+    public static String getMedia(String accessToken, String mediaId, String savePath) {
+        String filePath = null;
+        // 拼接请求地址
+        String requestUrl = "http://file.api.weixin.qq.com/cgi-bin/media/get?access_token=ACCESS_TOKEN&media_id=MEDIA_ID";
+        requestUrl = requestUrl.replace("ACCESS_TOKEN", accessToken).replace("MEDIA_ID", mediaId);
+        System.out.println(requestUrl);
+        try {
+            URL url = new URL(requestUrl);
+            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+            conn.setDoInput(true);
+            conn.setRequestMethod("GET");
+
+            if (!savePath.endsWith("/")) {
+                savePath += "/";
+            }
+            // 根据内容类型获取扩展名
+            String fileExt = CommonUtil.getFileExt(conn.getHeaderField("Content-Type"));
+            // 将mediaId作为文件名
+            filePath = savePath + mediaId + fileExt;
+
+            BufferedInputStream bis = new BufferedInputStream(conn.getInputStream());
+            FileOutputStream fos = new FileOutputStream(new File(filePath));
+            byte[] buf = new byte[8096];
+            int size = 0;
+            while ((size = bis.read(buf)) != -1)
+                fos.write(buf, 0, size);
+            fos.close();
+            bis.close();
+
+            conn.disconnect();
+            log.info("下载媒体文件成功，filePath=" + filePath);
+        } catch (Exception e) {
+            filePath = null;
+            log.error("下载媒体文件失败：{}", e);
+        }
+        return filePath;
+    }
+
+
+
+
 
     public static void main(String args[]) {
         // 获取接口访问凭证
-        String accessToken = CommonUtil.getToken("APPID", "APPSECRET");
+        String accessToken = CommonUtil.getToken("wxa2e22be671c6774b", "2833fb4fa09b18f4218661131b95c0f2");
+
+
+
+//        /**
+//         * 上传多媒体文件
+//         */
+//        WeixinMedia weixinMedia = uploadMedia(accessToken, "image", "http://img05.tooopen.com/images/20150202/sy_80219211654.jpg");
+//        System.out.println(weixinMedia.getMediaId());
+//        System.out.println(weixinMedia.getType());
+//        System.out.println(weixinMedia.getCreatedAt());
 
         /**
-         * 发送客服消息（文本消息）
+         * 下载多媒体文件
          */
-        // 组装文本客服消息
-        String jsonTextMsg = makeTextCustomMessage("oEdzejiHCDqafJbz4WNJtWTMbDcE", "点击查看<a href=\"http://blog.csdn.net/lyq8479\">柳峰的博客</a>");
-        // 发送客服消息
-        sendCustomMessage(accessToken, jsonTextMsg);
-
-        /**
-         * 发送客服消息（图文消息）
-         */
-        Article article1 = new Article();
-        article1.setTitle("微信上也能斗地主");
-        article1.setDescription("");
-        article1.setPicUrl("http://www.egouji.com/xiaoq/game/doudizhu_big.png");
-        article1.setUrl("http://resource.duopao.com/duopao/games/small_games/weixingame/Doudizhu/doudizhu.htm");
-        Article article2 = new Article();
-        article2.setTitle("傲气雄鹰\n80后不得不玩的经典游戏");
-        article2.setDescription("");
-        article2.setPicUrl("http://www.egouji.com/xiaoq/game/aoqixiongying.png");
-        article2.setUrl("http://resource.duopao.com/duopao/games/small_games/weixingame/Plane/aoqixiongying.html");
-        List<Article> list = new ArrayList<Article>();
-        list.add(article1);
-        list.add(article2);
-        // 组装图文客服消息
-        String jsonNewsMsg = makeNewsCustomMessage("oEdzejiHCDqafJbz4WNJtWTMbDcE", list);
-        // 发送客服消息
-        sendCustomMessage(accessToken, jsonNewsMsg);
-
-
+        getMedia(accessToken, "ru-F4OLTdzjRF3yo6zgItOy1E4RPSiHFyUW_yU5OvoS3SXQ-PTwYzV3m9OHVecMF", "D:/download");
     }
+
 }

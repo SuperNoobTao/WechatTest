@@ -50,7 +50,7 @@ public class CoreService {
                 String eventType = requestMap.get("Event");
                 // 订阅
                 if (eventType.equals(MessageUtil.EVENT_TYPE_SUBSCRIBE)) {
-                    textMessage.setContent("您好，欢迎关注网址导航！我们致力于打造精品网址聚合应用，为用户提供便捷的上网导航服务。体验生活，从这里开始！");
+                    textMessage.setContent("您好，欢迎关注！");
                     // 将消息对象转换成xml
                     respXml = MessageUtil.textMessageToXml(textMessage);
                 }

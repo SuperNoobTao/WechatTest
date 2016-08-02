@@ -4,8 +4,7 @@ package cn.edu.zucc.menu;
 /**
  * 按钮的基类
  *
- * @author liufeng
- * @date 2013-10-14
+ * Created by vito on 2016/7/29.
  */
 public class Button {
 	private String name;

@@ -3,8 +3,7 @@ package cn.edu.zucc.menu;
 /**
  * view类型的按钮
  *
- * @author liuyq
- * @date 2013-10-14
+ * Created by vito on 2016/7/29.
  */
 public class ViewButton extends Button {
 	private String type;

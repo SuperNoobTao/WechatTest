@@ -16,8 +16,7 @@ import javax.servlet.http.HttpServletRequest;
 /**
  * 核心服务类
  *
- * @author liufeng
- * @date 2013-10-17
+ * Created by vito on 2016/7/29.
  */
 public class CoreService {
     /**
@@ -64,17 +63,32 @@ public class CoreService {
                     String eventKey = requestMap.get("EventKey");
                     // 根据key值判断用户点击的按钮
                     if (eventKey.equals("oschina")) {
+
                         Article article = new Article();
                         article.setTitle("开源中国");
                         article.setDescription("开源中国社区成立于2008年8月，是目前中国最大的开源技术社区。\n\n开源中国的目的是为中国的IT技术人员提供一个全面的、快捷更新的用来检索开源软件以及交流开源经验的平台。\n\n经过不断的改进,目前开源中国社区已经形成了由开源软件库、代码分享、资讯、讨论区和博客等几大频道内容。");
-                        article.setPicUrl("");
+                        article.setPicUrl("http://img2.imgtn.bdimg.com/it/u=1003704465,1400426357&fm=21&gp=0.jpg");
                         String oauth = CommonUtil.urlEncodeUTF8("http://st.tunnel.qydev.com/wechat/welcome/OAuth");
                         String a = "https://open.weixin.qq.com/connect/oauth2/authorize?appid=wxa2e22be671c6774b&redirect_uri=";
                         String b = "&response_type=code&scope=snsapi_userinfo&state=STATE#wechat_redirect";
-
                         article.setUrl(a+oauth+b);
+
+                        Article article2 = new Article();
+                        article2.setTitle("开源中国");
+                        article2.setDescription("开源中国社区成立于2008年8月，是目前中国最大的开源技术社区。\n\n开源中国的目的是为中国的IT技术人员提供一个全面的、快捷更新的用来检索开源软件以及交流开源经验的平台。\n\n经过不断的改进,目前开源中国社区已经形成了由开源软件库、代码分享、资讯、讨论区和博客等几大频道内容。");
+                        article2.setPicUrl("http://img2.imgtn.bdimg.com/it/u=1003704465,1400426357&fm=21&gp=0.jpg");
+                        article2.setUrl(a+oauth+b);
+
+                        Article article3 = new Article();
+                        article3.setTitle("开源中国");
+                        article3.setDescription("开源中国社区成立于2008年8月，是目前中国最大的开源技术社区。\n\n开源中国的目的是为中国的IT技术人员提供一个全面的、快捷更新的用来检索开源软件以及交流开源经验的平台。\n\n经过不断的改进,目前开源中国社区已经形成了由开源软件库、代码分享、资讯、讨论区和博客等几大频道内容。");
+                        article3.setPicUrl("http://img2.imgtn.bdimg.com/it/u=1003704465,1400426357&fm=21&gp=0.jpg");
+                        article3.setUrl(a+oauth+b);
+
                         List<Article> articleList = new ArrayList<Article>();
                         articleList.add(article);
+                        articleList.add(article2);
+                        articleList.add(article3);
                         // 创建图文消息
                         NewsMessage newsMessage = new NewsMessage();
                         newsMessage.setToUserName(fromUserName);

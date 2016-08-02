@@ -5,8 +5,7 @@ import cn.edu.zucc.message.event.BaseEvent;
 /**
  * 上报地理位置事件
  *
- * @author liufeng
- * @date 2013-11-02
+ * Created by vito on 2016/7/29.
  */
 public class LocationEvent extends BaseEvent {
 	// 地理位置纬度

@@ -3,10 +3,7 @@ package cn.edu.zucc.pojo;
 import java.io.Serializable;
 
 /**
- * 凭证
- *
- * @author liufeng
- * @date 2013-10-17
+ * Created by vito on 2016/7/29.
  */
 public class Token implements Serializable{
 	// 接口访问凭证

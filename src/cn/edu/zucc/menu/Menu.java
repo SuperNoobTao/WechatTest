@@ -4,8 +4,7 @@ package cn.edu.zucc.menu;
 /**
  * 菜单
  *
- * @author liufeng
- * @date 2013-10-15
+ * Created by vito on 2016/7/29.
  */
 public class Menu {
 	private Button[] button;

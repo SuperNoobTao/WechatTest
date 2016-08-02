@@ -3,8 +3,7 @@ package cn.edu.zucc.message.event;
 /**
  * 扫描带参数二维码事件
  *
- * @author liufeng
- * @date 2013-11-04
+ * Created by vito on 2016/7/29.
  */
 public class QRCodeEvent extends BaseEvent {
 	// 事件KEY值

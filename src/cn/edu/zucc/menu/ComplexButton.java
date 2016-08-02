@@ -3,8 +3,7 @@ package cn.edu.zucc.menu;
 /**
  * 复合类型的按钮
  *
- * @author liufeng
- * @date 2013-08-08
+ * Created by vito on 2016/7/29.
  */
 public class ComplexButton extends Button {
 	private Button[] sub_button;

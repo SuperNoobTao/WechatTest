@@ -6,10 +6,7 @@ package cn.edu.zucc.pojo;
 import java.util.List;
 
 /**
- * 通过网页授权获取的用户信息
- *
- * @author liufeng
- * @date 2013-11-09
+ * Created by vito on 2016/7/29.
  */
 public class SNSUserInfo {
     // 用户标识

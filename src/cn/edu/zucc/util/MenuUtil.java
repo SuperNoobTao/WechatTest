@@ -9,8 +9,7 @@ import org.slf4j.LoggerFactory;
 /**
  * 自定义菜单工具类
  *
- * @author liufeng
- * @date 2013-10-17
+ * Created by vito on 2016/7/29.
  */
 public class MenuUtil {
 	private static Logger log = LoggerFactory.getLogger(MenuUtil.class);

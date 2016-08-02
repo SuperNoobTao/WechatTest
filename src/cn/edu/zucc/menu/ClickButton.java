@@ -3,8 +3,7 @@ package cn.edu.zucc.menu;
 /**
  * click类型的按钮
  *
- * @author liufeng
- * @date 2013-10-14
+ * *Created by vito on 2016/7/29.
  */
 public class ClickButton extends Button {
 	private String type;

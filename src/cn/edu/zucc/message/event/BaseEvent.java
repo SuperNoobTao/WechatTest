@@ -3,8 +3,7 @@ package cn.edu.zucc.message.event;
 /**
  * 事件基类
  *
- * @author liufeng
- * @date 2013-11-02
+ * Created by vito on 2016/7/29.
  */
 public class BaseEvent {
 	// 开发者微信号

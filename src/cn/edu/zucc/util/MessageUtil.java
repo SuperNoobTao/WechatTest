@@ -9,6 +9,7 @@ import com.thoughtworks.xstream.core.util.QuickWriter;
 import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
 import com.thoughtworks.xstream.io.xml.PrettyPrintWriter;
 import com.thoughtworks.xstream.io.xml.XppDriver;
+import net.sf.json.JSONObject;
 import org.dom4j.Document;
 import org.dom4j.Element;
 import org.dom4j.io.SAXReader;
@@ -19,6 +20,8 @@ import java.io.Writer;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import static cn.edu.zucc.util.CommonUtil.httpsRequest;
 
 /**
  * Created by vito on 2016/7/25.
@@ -179,4 +182,41 @@ public class MessageUtil {
             };
         }
     });
+
+
+    /**
+
+     * 发送模板消息
+
+     * @param accessToken
+
+     * @param jsonData
+
+     */
+
+    public static void sendTemplateMsg(String accessToken,String jsonData){
+
+        String send_templatemsg_url = "";
+        String requestUrl=send_templatemsg_url.replace("ACCESS_TOKEN", accessToken);
+
+        JSONObject jsonObject = httpsRequest(requestUrl,"GET", jsonData);
+
+        if(jsonObject!=null){
+            if("0".equals(jsonObject.getString("errcode"))){
+                System.out.println("发送模板消息成功！");
+            }else{
+                System.out.println(jsonObject.getString("errcode"));
+            }
+        }
+    }
+
+
+
+
+
+
+
+
+
+
 }

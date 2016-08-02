@@ -3,12 +3,16 @@ package cn.edu.zucc.util;
 import java.io.*;
 import java.net.ConnectException;
 import java.net.URL;
+import java.util.HashMap;
+import java.util.Map;
 import javax.net.ssl.HttpsURLConnection;
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.SSLSocketFactory;
 import javax.net.ssl.TrustManager;
 
+import cn.edu.zucc.pojo.TemplateData;
 import cn.edu.zucc.pojo.Token;
+import cn.edu.zucc.pojo.WxTemplate;
 import javafx.scene.input.TouchEvent;
 import net.sf.json.JSONException;
 import net.sf.json.JSONObject;
@@ -22,8 +26,7 @@ import redis.clients.jedis.JedisPool;
 /**
  * 通用工具类
  *
- * @author liufeng
- * @date 2013-10-17
+ * Created by vito on 2016/7/29.
  */
 public class CommonUtil {
 	private static Logger log = LoggerFactory.getLogger(CommonUtil.class);
@@ -168,4 +171,72 @@ public class CommonUtil {
 			fileExt = ".mp4";
 		return fileExt;
 	}
+
+
+
+
+
+
+		/**
+		 * 发送模板消息
+		 * appId 公众账号的唯一标识
+		 * appSecret 公众账号的密钥
+		 * openId 用户标识
+		 */
+		public  static void send_template_message(String appId, String appSecret, String openId) {
+			String access_token = getToken(appId, appSecret);
+
+			String url = "https://api.weixin.qq.com/cgi-bin/message/template/send?access_token=" + access_token;
+			WxTemplate temp = new WxTemplate();
+			temp.setUrl("http://weixin.qq.com/download");
+			temp.setTouser(openId);
+			temp.setTopcolor("#000000");
+//        temp.setTemplate_id("ngqIpbwh8bUfcSsECmogfXcV14J0tQlEpBO27izEYtY");
+			temp.setTemplate_id("K8d6YFoB_6Q2rg4mVkjZ26C-m-ZIBANtBO8EriSJuZc");
+			Map<String, TemplateData> m = new HashMap<String, TemplateData>();
+			TemplateData firstData = new TemplateData();
+			firstData.setColor("#000000");
+			firstData.setValue("恭喜购物成功");
+			m.put("firstData", firstData);
+			TemplateData product = new TemplateData();
+			product.setColor("#000000");
+			product.setValue("韩版西服");
+			m.put("product", product);
+			TemplateData price = new TemplateData();
+			price.setColor("#000000");
+			price.setValue("149元");
+			m.put("price", price);
+			TemplateData time = new TemplateData();
+			time.setColor("#000000");
+			time.setValue("2016-08-02 13:43:05");
+			TemplateData remark = new TemplateData();
+			remark.setColor("#000000");
+			remark.setValue("感谢您的光临，我们将尽快发货");
+			m.put("remark", remark);
+			temp.setData(m);
+			String jsonString = JSONObject.fromObject(temp).toString();
+			System.out.println(jsonString);
+			JSONObject jsonObject = httpsRequest(url, "POST", jsonString);
+			System.out.println(jsonObject);
+			int result = 0;
+			if (null != jsonObject) {
+				if (0 != jsonObject.getInt("errcode")) {
+					result = jsonObject.getInt("errcode");
+					log.error("错误 errcode:{} errmsg:{}", jsonObject.getInt("errcode"), jsonObject.getString("errmsg"));
+				}
+			}
+			log.info("模板消息发送结果：" + result);
+		}
+
+	public static void main(String args[]) {
+		String accessToken = CommonUtil.getToken("wxa2e22be671c6774b", "2833fb4fa09b18f4218661131b95c0f2");
+		CommonUtil.send_template_message("wxa2e22be671c6774b","2833fb4fa09b18f4218661131b95c0f2","ouWiZv7MRTGGEE27Dbqwm1Bz5Zkc");
+
+
+
+
+
+
+	}
+
 }
